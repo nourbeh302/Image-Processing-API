@@ -11,27 +11,29 @@ routes.get('/images', async (req: Request, res: Response) => {
   if(!(width && height && filename)) {
     res.status(400).json({ message: 'The file name, width, and height must be provided' })
   }
-  try {
-    const fullFolder = path.resolve('./assets/full')
-    const thumbnailsFolder = path.resolve('./assets/thumbnails')
-    const fileBySize = `${filename}_${width}_${height}.png`.replace('.png_', '_')
+  else {
+    try {
+      const fullFolder = path.resolve('./assets/full')
+      const thumbnailsFolder = path.resolve('./assets/thumbnails')
+      const fileBySize = `${filename}_${width}_${height}.png`.replace('.png_', '_')
+      
+      const isFileExists = existsSync(path.join(thumbnailsFolder, fileBySize))
+      if (isFileExists) {
+        res.sendFile(path.join(thumbnailsFolder, fileBySize))
+      }
+      else {
+        await createImage(
+          + (width as string), 
+          + (height as string), 
+          path.join(fullFolder, filename as string),
+          path.join(thumbnailsFolder, fileBySize)
+        )
+        res.status(201).sendFile(path.join(thumbnailsFolder, fileBySize))
+      }
     
-    const isFileExists = existsSync(path.join(thumbnailsFolder, fileBySize))
-    if (isFileExists) {
-      res.sendFile(path.join(thumbnailsFolder, fileBySize))
+    } catch (error) {
+      res.status(400).json('The file should exist in the full folder to be resized')
     }
-    else {
-      await createImage(
-        + (width as string), 
-        + (height as string), 
-        path.join(fullFolder, filename as string),
-        path.join(thumbnailsFolder, fileBySize)
-      )
-      res.status(201).sendFile(path.join(thumbnailsFolder, fileBySize))
-    }
-
-  } catch (error) {
-    res.status(400).json('The file should exist in the full folder to be resized')
   }
   
 })

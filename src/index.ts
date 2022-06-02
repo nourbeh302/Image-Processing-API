@@ -9,3 +9,5 @@ app.use(morgan('dev'))
 app.use('/api', routes)
 
 app.listen(port, () => console.log(`App running on port ${port}`));
+
+export default app;
