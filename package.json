@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc -w",
+    "build": "npx tsc",
+    "clean": "npx tsc --build --clean",
     "start": "nodemon ./build/index",
     "prettier": "prettier ./src/**/*.ts --write",
     "lint": "eslint src/**/*.ts"
